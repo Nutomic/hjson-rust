@@ -60,7 +60,7 @@
 #[macro_use] extern crate lazy_static;
 
 #[cfg(feature = "preserve_order")]
-extern crate linked_hash_map;
+extern crate hashlink;
 extern crate core;
 extern crate num_traits;
 extern crate regex;

@@ -36,7 +36,7 @@
 use std::collections::{BTreeMap, btree_map};
 
 #[cfg(feature = "preserve_order")]
-use linked_hash_map::{self, LinkedHashMap};
+use hashlink::{self, LinkedHashMap};
 
 use std::fmt;
 use std::io;
@@ -62,12 +62,12 @@ pub type Map<K, V> = LinkedHashMap<K, V>;
 pub type MapIntoIter<K, V> = btree_map::IntoIter<K, V>;
 /// Represents the IntoIter type.
 #[cfg(feature = "preserve_order")]
-pub type MapIntoIter<K, V> = linked_hash_map::IntoIter<K, V>;
+pub type MapIntoIter<K, V> = hashlink::linked_hash_map::IntoIter<K, V>;
 
 #[cfg(not(feature = "preserve_order"))]
 type MapVisitor<K, T> = de::impls::BTreeMapVisitor<K, T>;
 #[cfg(feature = "preserve_order")]
-type MapVisitor<K, T> = linked_hash_map::serde::LinkedHashMapVisitor<K, T>;
+type MapVisitor<K, T> = hashlink::serde::LinkedHashMapVisitor<K, T>;
 
 /// Represents a Hjson/JSON value
 #[derive(Clone, PartialEq)]
@@ -438,7 +438,7 @@ impl de::Deserialize for Value {
             fn visit_map<V>(&mut self, visitor: V) -> Result<Value, V::Error>
                 where V: de::MapVisitor,
             {
-                let values = try!(MapVisitor::new().visit_map(visitor));
+                let values = try!(MapVisitor::default().visit_map(visitor));
                 Ok(Value::Object(values))
             }
         }
